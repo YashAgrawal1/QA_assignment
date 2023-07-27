@@ -1,6 +1,8 @@
 from selenium import webdriver
 import time
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+
 
 def open_website():
     driver = webdriver.Chrome(executable_path="C:\\Users\\yagraw\\Downloads\\chromedriver.exe")
@@ -43,6 +45,7 @@ def sort(driver):
     sort_button = driver.find_element(By.XPATH, '//div[text()="Name"]')
     sort_button.click()
     time.sleep(1)
+    scroll_to_top(driver)
     search_list1 = getName(driver)
     search_list_ascending = search_list1
     search_list1.sort()
@@ -51,6 +54,7 @@ def sort(driver):
     else:
         print('not sorted in ascending') 
     sort_button.click()
+    scroll_to_top(driver)
     search_list2 = getName(driver)
     search_list_descending = search_list2
     search_list2.sort(reverse=True)
@@ -58,6 +62,18 @@ def sort(driver):
         print('sorted in descending')
     else:
         print('not sorted in descending') 
+
+def scroll_to_top(driver):
+    action = ActionChains(driver)
+    print("Scrolling to top")
+    while True:
+        for_parent_of_first = driver.find_elements(By.XPATH, "//div[@data-rowindex = '1']")
+        res = driver.find_elements(By.XPATH, '//div[@data-field="name"]/div[text()]')
+        action.scroll_to_element(res[0]).perform()
+        if for_parent_of_first:
+            res = driver.find_element(By.XPATH, '//div[@data-rowindex = "1"]/div[@data-field="name"]/div[text()]')
+            break
+        time.sleep(1)
 
 if __name__ == "__main__":
     driver = open_website()
